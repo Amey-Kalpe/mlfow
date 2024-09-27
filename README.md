@@ -67,20 +67,28 @@ mlruns/
 ├── **<experiment_id>**
 │   ├── **<run_id>**
 │   │   ├── artifacts
+│   │   ├── metrics
+│   │   ├── tags
 │   │   ├── meta.yaml
 │   │   └── params.yaml
 │   ├── **<run_id>**
 │   │   ├── artifacts
+│   │   ├── metrics
+│   │   ├── tags
 │   │   ├── meta.yaml
 │   │   └── params.yaml
 │   └── ...
 ├── **<experiment_id>**
 │   ├── **<run_id>**
 │   │   ├── artifacts
+│   │   ├── metrics
+│   │   ├── tags
 │   │   ├── meta.yaml
 │   │   └── params.yaml
 │   ├── **<run_id>**
 │   │   ├── artifacts
+│   │   ├── metrics
+│   │   ├── tags
 │   │   ├── meta.yaml
 │   │   └── params.yaml
 │   └── ...
