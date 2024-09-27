@@ -24,7 +24,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 # MLFlow set tracking URI for mlflow server
-mlflow.set_tracking_uri("http://127.0.0.1:5000")
+mlflow.set_tracking_uri("")
 
 artifact_loc = Path.cwd().joinpath("iris_artifacts").as_uri()
 exp = mlflow.get_experiment_by_name(name="iris_exp")
