@@ -35,7 +35,7 @@ Read more here: [mlflow Tracking Server](https://mlflow.org/docs/latest/tracking
 ### Model Storage Format
 #### Directory Structure
 - The default storage format for mlfow experiments is directory structure, i.e the mlruns folder that is created after first experiment is run using mlflow.
-- The directory structure is as follows:
+- The directory structure when specifying a custom folder for artifacts is as follows:
 ``` 
 artifacts/
 ├── conda.yaml
@@ -61,6 +61,31 @@ artifacts/
     - This file is created when you use MLflow to log your model with a plain Python environment.
     - It specifies the requirements.txt file that lists the dependencies used to train and package the model.
     - This ensures reproducibility by recreating the same environment when deploying or serving the model.
+- If custom artifact location not specified:
+~~~
+mlruns/
+├── **<experiment_id>**
+│   ├── **<run_id>**
+│   │   ├── artifacts
+│   │   ├── meta.yaml
+│   │   └── params.yaml
+│   ├── **<run_id>**
+│   │   ├── artifacts
+│   │   ├── meta.yaml
+│   │   └── params.yaml
+│   └── ...
+├── **<experiment_id>**
+│   ├── **<run_id>**
+│   │   ├── artifacts
+│   │   ├── meta.yaml
+│   │   └── params.yaml
+│   ├── **<run_id>**
+│   │   ├── artifacts
+│   │   ├── meta.yaml
+│   │   └── params.yaml
+│   └── ...
+└── ...
+~~~
 
 ### Model Signature
 - The model signature in the **Model** component of mlflow defines the type and shape of the input and output data that is used/expected by the model.
