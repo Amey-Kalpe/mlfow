@@ -1,4 +1,5 @@
 """ Start mlflow tracking server before running this module  """
+
 import warnings
 import argparse
 import logging
@@ -19,6 +20,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--alpha", type=float, required=False, default=0.7)
 parser.add_argument("--l1_ratio", type=float, required=False, default=0.7)
 args = parser.parse_args()
+
 
 # evaluation function
 def eval_metrics(actual, pred):
@@ -47,14 +49,20 @@ if __name__ == "__main__":
     alpha = args.alpha
     l1_ratio = args.l1_ratio
 
-    mlflow.set_tracking_uri(uri="http://127.0.0.1:5000")
+    mlflow.set_tracking_uri(uri="")
 
     print("The set tracking uri is ", mlflow.get_tracking_uri())
-    exp_id = mlflow.create_experiment(
-        name="exp_create_exp_artifact",
-        tags={"version": "v1", "priority": "p1"},
-        artifact_location=Path.cwd().joinpath("myartifacts").as_uri()
-    )
+
+    exp = mlflow.get_experiment_by_name(name="exp_create_exp_artifact")
+
+    if exp:
+        exp_id = exp.experiment_id
+    else:
+        exp_id = mlflow.create_experiment(
+            name="exp_create_exp_artifact",
+            tags={"version": "v1", "priority": "p1"},
+            artifact_location=Path.cwd().joinpath("myartifacts").as_uri(),
+        )
     get_exp = mlflow.get_experiment(exp_id)
 
     print("Name: {}".format(get_exp.name))
@@ -87,4 +95,3 @@ if __name__ == "__main__":
         print(f"Current active run: {mlflow.active_run()}")
 
     print(f"Current active run: {mlflow.last_active_run()}")
-    
