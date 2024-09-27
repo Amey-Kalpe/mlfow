@@ -1,3 +1,4 @@
+""" Start mlflow tracking server before running this module  """
 import warnings
 import argparse
 import logging
@@ -46,7 +47,7 @@ if __name__ == "__main__":
     alpha = args.alpha
     l1_ratio = args.l1_ratio
 
-    mlflow.set_tracking_uri(uri="")
+    mlflow.set_tracking_uri(uri="http://127.0.0.1:5000")
 
     print("The set tracking uri is ", mlflow.get_tracking_uri())
     exp_id = mlflow.create_experiment(
@@ -64,7 +65,7 @@ if __name__ == "__main__":
     print("Creation timestamp: {}".format(get_exp.creation_time))
 
     with mlflow.start_run(experiment_id=exp_id):
-        lr = ElasticNet(alpha=alpha, l1_ratio=l1_ratio, random_state=42)
+        lr = ElasticNet(alpha=alpha, l1_ratio=l1_ratio)
         lr.fit(train_x, train_y)
 
         predicted_qualities = lr.predict(test_x)
