@@ -50,6 +50,9 @@ if __name__ == "__main__":
     l1_ratio = args.l1_ratio
 
     mlflow.set_tracking_uri(uri="")
+    mlflow.sklearn.autolog(
+        log_input_examples=False, log_model_signatures=False, log_models=False
+    )
 
     print("The set tracking uri is ", mlflow.get_tracking_uri())
 
@@ -85,11 +88,6 @@ if __name__ == "__main__":
         print("  MAE: %s" % mae)
         print("  R2: %s" % r2)
 
-        mlflow.log_param("alpha", alpha)
-        mlflow.log_param("l1_ratio", l1_ratio)
-        mlflow.log_metric("rmse", rmse)
-        mlflow.log_metric("r2", r2)
-        mlflow.log_metric("mae", mae)
         mlflow.sklearn.log_model(lr, "mymodel")
 
         print(f"Current active run: {mlflow.active_run()}")
