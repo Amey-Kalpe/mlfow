@@ -51,7 +51,7 @@ with mlflow.start_run(experiment_id=exp_id):
         X_test, columns=["sepal_length", "sepal_width", "petal_length", "petal_width"]
     )
     test_data["class"] = y_test
-    train_data.to_csv("data/test_data.csv")
+    test_data.to_csv("data/test_data.csv")
     mlflow.log_artifact("data/test_data.csv")
 
     mlflow.sklearn.autolog(log_input_examples=True)
