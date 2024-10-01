@@ -1,4 +1,7 @@
-""" Start mlflow tracking server before running this module  """
+""" Start mlflow tracking server before running this module 
+This module assumes sklearn is not supported by mlflow for
+the purpose of implementing custom python model.
+"""
 
 import warnings
 import argparse
@@ -10,7 +13,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import ElasticNet
 import mlflow
 import mlflow.sklearn
+from mlflow.models.signature import ModelSignature, infer_signature
 from pathlib import Path
+from predictor import predictor
+import joblib
 
 logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
@@ -56,15 +62,16 @@ if __name__ == "__main__":
 
     print("The set tracking uri is ", mlflow.get_tracking_uri())
 
-    exp = mlflow.get_experiment_by_name(name="exp_create_exp_artifact")
+    experiment_name = "exp_custom_model"
+    exp = mlflow.get_experiment_by_name(name=experiment_name)
 
     if exp:
         exp_id = exp.experiment_id
     else:
         exp_id = mlflow.create_experiment(
-            name="exp_create_exp_artifact",
+            name=experiment_name,
             tags={"version": "v1", "priority": "p1"},
-            artifact_location=Path.cwd().joinpath("myartifacts").as_uri(),
+            # artifact_location=Path.cwd().joinpath("myartifacts").as_uri(),
         )
     get_exp = mlflow.get_experiment(exp_id)
 
@@ -88,8 +95,39 @@ if __name__ == "__main__":
         print("  MAE: %s" % mae)
         print("  R2: %s" % r2)
 
-        mlflow.sklearn.log_model(lr, "mymodel")
+        sklearn_model_path = "sklearn_model.pkl"
+        joblib.dump(lr, sklearn_model_path)
 
+        data_dir = "red-wine-data"
+        train_x.to_csv(f"{data_dir}/train_data.csv")
+        test_x.to_csv(f"{data_dir}/test_data.csv")
+
+        artifacts = {"sklearn_model": sklearn_model_path, "data": data_dir}
+
+        class SklearnModel(mlflow.pyfunc.PythonModel):
+            def load_context(self, context):
+                self.sklearn_model = joblib.load(context.artifacts["sklearn_model"])
+
+            def predict(self, context, model_input):
+                return self.sklearn_model.predict(model_input.values)
+
+        mlflow.pyfunc.log_model(
+            artifact_path="custom_sklearn_artifacts",
+            python_model=SklearnModel(),
+            artifacts=artifacts,
+            code_paths=["main.py"],
+            pip_requirements="../requirements.txt",
+        )
+
+        custom_model = mlflow.pyfunc.load_model(
+            model_uri="runs:/76354552393f44d28faef66fed93a612/custom_sklearn_artifacts"
+        )
+        predicted_qualities = custom_model.predict(test_x)
+        print(predicted_qualities)
+        rmse, mae, r2 = eval_metrics(test_y, predicted_qualities)
+        print("  RMSE: %s" % rmse)
+        print("  MAE: %s" % mae)
+        print("  R2: %s" % r2)
         print(f"Current active run: {mlflow.active_run()}")
 
     print(f"Current active run: {mlflow.last_active_run()}")
