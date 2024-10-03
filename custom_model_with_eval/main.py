@@ -127,7 +127,7 @@ if __name__ == "__main__":
             return np.sum(np.abs((eval_df["prediction"] - eval_df["target"] + 1) ** 2))
 
         def sum_on_target_by_two(_eval_df, builtin_metrics):
-            return builtin_metrics["sum_of_target"] / 2
+            return builtin_metrics["sum_on_target"] / 2
 
         metric_squared_diff_plus_one = make_metric(
             eval_fn=square_diff_plus_one,
@@ -151,6 +151,7 @@ if __name__ == "__main__":
             model_type="regressor",
             targets="quality",
             evaluators=["default"],
+            custom_metrics=[metric_squared_diff_plus_one, metric_sum_on_target_by_two],
         )
 
         # custom_model = mlflow.pyfunc.load_model(
