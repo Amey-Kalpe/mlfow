@@ -187,3 +187,17 @@ The load_model method in MLflow is used to load a previously saved or logged mod
     # Make predictions
     predictions = model.predict(new_data)
     ```
+
+## Model Evaluation
+The [**evaluate**](https://mlflow.org/docs/latest/models.html#performing-model-validation) method in MLflow is crucial for assessing the performance of machine learning models:
+- It helps data scientists and ML engineers measure, interpret, and explain how well their models are performing on new datasets.
+- This step is essential for validating the accuracy, reliability, and efficiency of models before deploying them.
+
+### Important Parameters in the evaluate Method:
+- **Model to Evaluate**: This can be an MLflow pyfunc model, a URI pointing to a registered MLflow model, or any Python callable representing your model (e.g., a HuggingFace text summarization pipeline).
+- **Metrics**: The metrics to compute during evaluation. MLflow supports various metrics, including those specific to large language models (LLMs).
+- **Evaluation Data**: The data on which the model is evaluated. This can be a Pandas DataFrame, a Python list, a NumPy array, or an mlflow.data.dataset.Dataset instance.
+
+#### Different runs from an experiment can be compared using the mlflow UI, to get insights into the model performance with differing configurations.
+
+
